@@ -97,8 +97,7 @@ public interface MovieMapper {
 
     // ---- 榜单查询 ----
 
-    @Select("SELECT * FROM movie WHERE avg_rating >= 7.0 AND rating_count >= 3 " +
-            "ORDER BY avg_rating DESC")
+    @Select("SELECT * FROM movie WHERE rating_count > 0 ORDER BY avg_rating DESC")
     List<Movie> selectHighRatingRanking();
 
     @Select("SELECT * FROM movie ORDER BY favorite_count DESC")

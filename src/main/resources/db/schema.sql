@@ -168,3 +168,20 @@ CREATE TABLE `playlist_movie` (
     CONSTRAINT `fk_pm_playlist` FOREIGN KEY (`playlist_id`) REFERENCES `playlist` (`id`) ON DELETE CASCADE,
     CONSTRAINT `fk_pm_movie`    FOREIGN KEY (`movie_id`)    REFERENCES `movie` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='片单影视关联表';
+
+
+-- ============================================================
+-- 8. 影评收藏表 (review_favorite)
+-- ============================================================
+DROP TABLE IF EXISTS `review_favorite`;
+CREATE TABLE `review_favorite` (
+    `id`        BIGINT   NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `user_id`   BIGINT   NOT NULL                COMMENT '收藏者ID',
+    `review_id` BIGINT   NOT NULL                COMMENT '影评ID',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '收藏时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_user_review` (`user_id`, `review_id`),
+    KEY `idx_review_id` (`review_id`),
+    CONSTRAINT `fk_rf_user`   FOREIGN KEY (`user_id`)  REFERENCES `user` (`id`)   ON DELETE CASCADE,
+    CONSTRAINT `fk_rf_review` FOREIGN KEY (`review_id`) REFERENCES `review` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='影评收藏表';
