@@ -1,3 +1,26 @@
 spring:
   application:
     name: MovieManageSystem
+
+  # 数据库配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/movie_manage_system?useUnicode=true&characterEncoding=utf8mb4&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # Jackson JSON 日期格式化
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+
+server:
+  port: 8080
+
+# MyBatis 配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.j2ee.MovieManageSystem.entity
+  configuration:
+    map-underscore-to-camel-case: true    # 下划线转驼峰
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # SQL日志
