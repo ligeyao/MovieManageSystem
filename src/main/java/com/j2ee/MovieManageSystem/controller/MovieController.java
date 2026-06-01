@@ -31,11 +31,13 @@ public class MovieController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String genre,
+            @RequestParam(required = false) String language,
+            @RequestParam(required = false) String filterMode,
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) String country,
             @RequestParam(required = false) Long publisherId,
             @RequestParam(required = false) String sort) {
-        PageResult<MovieListResponse> result = movieService.listMovies(page, size, keyword, genre, year, country, publisherId, sort);
+        PageResult<MovieListResponse> result = movieService.listMovies(page, size, keyword, genre, language, filterMode, year, country, publisherId, sort);
         return Result.ok(result);
     }
 

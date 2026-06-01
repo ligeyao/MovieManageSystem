@@ -35,12 +35,12 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public PageResult<MovieListResponse> listMovies(int page, int size, String keyword,
-                                                     String genre, Integer year,
-                                                     String country, Long publisherId,
+                                                     String genre, String language, String filterMode,
+                                                     Integer year, String country, Long publisherId,
                                                      String sort) {
         int offset = (page - 1) * size;
 
-        List<MovieMapper.MovieDetail> details = movieMapper.selectPage(keyword, genre, year, country, publisherId, sort);
+        List<MovieMapper.MovieDetail> details = movieMapper.selectPage(keyword, genre, language, filterMode, year, country, publisherId, sort);
 
         // 手动分页
         long total = details.size();

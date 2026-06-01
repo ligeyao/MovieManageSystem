@@ -50,7 +50,18 @@ public interface MovieMapper {
             "SELECT m.*, u.username AS publisher_name FROM movie m " +
             "LEFT JOIN user u ON m.publisher_id = u.id WHERE 1=1 " +
             "<if test='keyword != null and keyword != \"\"'>AND m.title_cn LIKE CONCAT('%',#{keyword},'%') </if>" +
-            "<if test='genre != null and genre != \"\"'>AND m.genre = #{genre} </if>" +
+            "<choose>" +
+            "  <when test='filterMode == \"or\"'>" +
+            "    <trim prefix='AND (' suffix=')' prefixOverrides='OR'>" +
+            "      <if test='genre != null and genre != \"\"'>OR m.genre = #{genre} </if>" +
+            "      <if test='language != null and language != \"\"'>OR m.language = #{language} </if>" +
+            "    </trim>" +
+            "  </when>" +
+            "  <otherwise>" +
+            "    <if test='genre != null and genre != \"\"'>AND m.genre = #{genre} </if>" +
+            "    <if test='language != null and language != \"\"'>AND m.language = #{language} </if>" +
+            "  </otherwise>" +
+            "</choose>" +
             "<if test='year != null'>AND m.year = #{year} </if>" +
             "<if test='country != null and country != \"\"'>AND m.country = #{country} </if>" +
             "<if test='publisherId != null'>AND m.publisher_id = #{publisherId} </if>" +
@@ -61,6 +72,8 @@ public interface MovieMapper {
             "</script>")
     List<MovieDetail> selectPage(@Param("keyword") String keyword,
                                   @Param("genre") String genre,
+                                  @Param("language") String language,
+                                  @Param("filterMode") String filterMode,
                                   @Param("year") Integer year,
                                   @Param("country") String country,
                                   @Param("publisherId") Long publisherId,

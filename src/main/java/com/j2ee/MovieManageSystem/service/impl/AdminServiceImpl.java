@@ -92,7 +92,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public PageResult<MovieListResponse> listMovies(int page, int size, String keyword) {
         checkAdmin();
-        List<MovieMapper.MovieDetail> all = movieMapper.selectPage(keyword, null, null, null, null, null);
+        List<MovieMapper.MovieDetail> all = movieMapper.selectPage(keyword, null, null, null, null, null, null, null);
         int offset = (page - 1) * size;
         int toIndex = Math.min(offset + size, all.size());
         List<MovieMapper.MovieDetail> pageList = (offset >= all.size()) ? List.of() : all.subList(offset, toIndex);

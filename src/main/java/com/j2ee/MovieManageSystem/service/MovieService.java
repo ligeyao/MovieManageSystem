@@ -11,8 +11,8 @@ import com.j2ee.MovieManageSystem.dto.response.MovieListResponse;
 public interface MovieService {
 
     PageResult<MovieListResponse> listMovies(int page, int size, String keyword,
-                                              String genre, Integer year,
-                                              String country, Long publisherId,
+                                              String genre, String language, String filterMode,
+                                              Integer year, String country, Long publisherId,
                                               String sort);
 
     MovieDetailResponse getMovieDetail(Long movieId);
