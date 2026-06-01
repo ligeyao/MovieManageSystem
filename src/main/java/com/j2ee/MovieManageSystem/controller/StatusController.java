@@ -38,4 +38,10 @@ public class StatusController {
         statusService.markStatus(request);
         return Result.ok("标记成功");
     }
+
+    /** 观看热力图 */
+    @GetMapping("/heatmap")
+    public Result<?> heatmap() {
+        return Result.ok(statusService.getWatchHeatmap());
+    }
 }

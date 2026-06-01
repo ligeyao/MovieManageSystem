@@ -39,4 +39,10 @@ public interface UserMovieStatusMapper {
     java.util.List<MovieMapper.MovieDetail> selectMoviesByUserIdAndStatus(
             @Param("userId") Long userId,
             @Param("status") String status);
+
+    /** 按日统计用户看过影视数量（热力图数据） */
+    @Select("SELECT DATE(watch_date) AS day, COUNT(*) AS cnt FROM user_movie_status " +
+            "WHERE user_id = #{userId} AND status = 'watched' AND watch_date IS NOT NULL " +
+            "GROUP BY DATE(watch_date) ORDER BY day")
+    java.util.List<java.util.Map<String, Object>> countWatchedByDay(Long userId);
 }

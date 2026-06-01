@@ -110,4 +110,9 @@ public class StatusServiceImpl implements StatusService {
 
         return PageResult.of(all.size(), page, size, list);
     }
+
+    @Override
+    public java.util.List<java.util.Map<String, Object>> getWatchHeatmap() {
+        return statusMapper.countWatchedByDay(CurrentUser.getUserId());
+    }
 }
