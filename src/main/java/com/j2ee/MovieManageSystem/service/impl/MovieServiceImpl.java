@@ -198,4 +198,51 @@ public class MovieServiceImpl implements MovieService {
 
         movieMapper.deleteById(movieId);
     }
+
+    @Override
+    public int batchImport(String text) {
+        String role = CurrentUser.getRole();
+        if (!"publisher".equals(role)) throw new BusinessException(403, "仅发布者可以导入");
+
+        Long publisherId = CurrentUser.getUserId();
+        String[] lines = text.split("\n");
+        int count = 0;
+
+        for (String line : lines) {
+            line = line.trim();
+            if (line.isEmpty()) continue;
+            // 格式: 片名|外文片名|导演|演员|类型|年代|国家|语言|片长|简介|平台|获奖
+            String[] parts = line.split("\\|", -1);
+            if (parts.length < 5) continue;
+
+            Movie m = new Movie();
+            m.setTitleCn(parts[0].trim());
+            m.setTitleEn(parts.length > 1 ? parts[1].trim() : null);
+            m.setDirector(parts.length > 2 ? parts[2].trim() : "");
+            m.setActors(parts.length > 3 ? parts[3].trim() : null);
+            m.setGenre(parts.length > 4 ? parts[4].trim() : "");
+            m.setYear(parts.length > 5 ? parseInt(parts[5]) : null);
+            m.setCountry(parts.length > 6 ? parts[6].trim() : "");
+            m.setLanguage(parts.length > 7 ? parts[7].trim() : "");
+            m.setDuration(parts.length > 8 ? parseIntOrZero(parts[8]) : 0);
+            m.setDescription(parts.length > 9 ? parts[9].trim() : null);
+            m.setPlatform(parts.length > 10 ? parts[10].trim() : null);
+            m.setAwards(parts.length > 11 ? parts[11].trim() : null);
+            m.setPublisherId(publisherId);
+
+            if (!m.getTitleCn().isEmpty() && !m.getDirector().isEmpty() && m.getYear() != null) {
+                movieMapper.insert(m);
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private Integer parseInt(String s) {
+        try { return Integer.parseInt(s.trim()); } catch (Exception e) { return null; }
+    }
+
+    private Integer parseIntOrZero(String s) {
+        try { return Integer.parseInt(s.trim()); } catch (Exception e) { return 0; }
+    }
 }

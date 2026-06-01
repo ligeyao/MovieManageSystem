@@ -22,4 +22,7 @@ public interface MovieService {
     void updateMovie(Long movieId, MovieRequest request);
 
     void deleteMovie(Long movieId);
+
+    /** 批量导入，返回成功条数 */
+    int batchImport(String text);
 }

@@ -9,6 +9,8 @@ import com.j2ee.MovieManageSystem.service.MovieService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 /**
  * 影视剧控制器
  */
@@ -75,5 +77,12 @@ public class MovieController {
     public Result<?> delete(@PathVariable Long id) {
         movieService.deleteMovie(id);
         return Result.ok("删除成功");
+    }
+
+    /** 批量导入 */
+    @PostMapping("/batch")
+    public Result<?> batchImport(@RequestBody Map<String, String> body) {
+        int count = movieService.batchImport(body.get("text"));
+        return Result.ok("成功导入 " + count + " 部影视");
     }
 }
