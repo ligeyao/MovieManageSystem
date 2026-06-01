@@ -6,15 +6,12 @@ import com.j2ee.MovieManageSystem.dto.request.MovieRequest;
 import com.j2ee.MovieManageSystem.dto.response.MovieDetailResponse;
 import com.j2ee.MovieManageSystem.dto.response.MovieListResponse;
 import com.j2ee.MovieManageSystem.entity.Movie;
-import com.j2ee.MovieManageSystem.entity.User;
 import com.j2ee.MovieManageSystem.interceptor.CurrentUser;
 import com.j2ee.MovieManageSystem.mapper.*;
 import com.j2ee.MovieManageSystem.service.MovieService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -39,11 +36,11 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public PageResult<MovieListResponse> listMovies(int page, int size, String keyword,
                                                      String genre, Integer year,
-                                                     String country, String sort) {
-        // MyBatis 注解方式不支持物理分页，这里使用逻辑分页
+                                                     String country, Long publisherId,
+                                                     String sort) {
         int offset = (page - 1) * size;
 
-        List<MovieMapper.MovieDetail> details = movieMapper.selectPage(keyword, genre, year, country, sort);
+        List<MovieMapper.MovieDetail> details = movieMapper.selectPage(keyword, genre, year, country, publisherId, sort);
 
         // 手动分页
         long total = details.size();
@@ -71,6 +68,8 @@ public class MovieServiceImpl implements MovieService {
             resp.setRatingCount(d.getRatingCount());
             resp.setWatchedCount(d.getWatchedCount());
             resp.setFavoriteCount(d.getFavoriteCount());
+            resp.setPublisherId(d.getPublisherId());
+            resp.setPublisherName(d.getPublisherName());
             resp.setCreatedAt(d.getCreatedAt());
             return resp;
         }).collect(Collectors.toList());

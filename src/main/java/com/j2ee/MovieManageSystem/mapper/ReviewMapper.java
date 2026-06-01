@@ -45,6 +45,29 @@ public interface ReviewMapper {
     @Select("SELECT COUNT(*) FROM review WHERE movie_id = #{movieId}")
     int selectCountByMovie(Long movieId);
 
+    // ---- 我的影评 ----
+
+    @Select("SELECT r.*, u.username, m.title_cn AS movie_title FROM review r " +
+            "LEFT JOIN user u ON r.user_id = u.id " +
+            "LEFT JOIN movie m ON r.movie_id = m.id " +
+            "WHERE r.user_id = #{userId} ORDER BY r.created_at DESC")
+    List<ReviewWithMovie> selectByUserId(Long userId);
+
+    @Data
+    class ReviewWithMovie {
+        private Long id;
+        private Long userId;
+        private Long movieId;
+        private Integer rating;
+        private String content;
+        private String reply;
+        private java.time.LocalDateTime replyAt;
+        private java.time.LocalDateTime createdAt;
+        private java.time.LocalDateTime updatedAt;
+        private String username;
+        private String movieTitle;
+    }
+
     // ---- 管理员 ----
 
     @Select("<script>" +

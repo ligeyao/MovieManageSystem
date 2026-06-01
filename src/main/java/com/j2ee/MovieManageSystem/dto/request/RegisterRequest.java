@@ -15,6 +15,8 @@ public class RegisterRequest {
     @NotBlank(message = "密码不能为空")
     private String password;
 
-    @Pattern(regexp = "^(user|publisher)$", message = "角色只能是 user 或 publisher")
+    @Pattern(regexp = "^(user|publisher|admin)$", message = "角色只能是 user、publisher 或 admin")
     private String role;
+
+    private String secret;
 }

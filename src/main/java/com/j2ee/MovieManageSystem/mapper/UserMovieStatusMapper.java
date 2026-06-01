@@ -29,4 +29,14 @@ public interface UserMovieStatusMapper {
 
     @Select("SELECT DISTINCT movie_id FROM user_movie_status WHERE user_id = #{userId} AND status = 'want_to_watch'")
     java.util.List<Long> selectWantToWatchMovieIds(Long userId);
+
+    /** 按用户+状态联表查影视列表 */
+    @Select("SELECT m.*, u.username AS publisher_name FROM user_movie_status ums " +
+            "JOIN movie m ON ums.movie_id = m.id " +
+            "LEFT JOIN user u ON m.publisher_id = u.id " +
+            "WHERE ums.user_id = #{userId} AND ums.status = #{status} " +
+            "ORDER BY ums.created_at DESC")
+    java.util.List<MovieMapper.MovieDetail> selectMoviesByUserIdAndStatus(
+            @Param("userId") Long userId,
+            @Param("status") String status);
 }

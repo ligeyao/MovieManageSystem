@@ -33,8 +33,9 @@ public class MovieController {
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) String country,
+            @RequestParam(required = false) Long publisherId,
             @RequestParam(required = false) String sort) {
-        PageResult<MovieListResponse> result = movieService.listMovies(page, size, keyword, genre, year, country, sort);
+        PageResult<MovieListResponse> result = movieService.listMovies(page, size, keyword, genre, year, country, publisherId, sort);
         return Result.ok(result);
     }
 

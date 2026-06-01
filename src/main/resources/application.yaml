@@ -4,9 +4,9 @@ spring:
 
   # 数据库配置
   datasource:
-    url: jdbc:mysql://localhost:3306/movie_manage_system?useUnicode=true&characterEncoding=utf8mb4&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/movie_manage_system?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
     username: root
-    password: 123456
+    password: admin
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   # Jackson JSON 日期格式化

@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 public class ReviewResponse {
     private Long id;
     private Long userId;
+    private Long movieId;
+    private String movieTitle;
     private String username;
     private Integer rating;
     private String content;

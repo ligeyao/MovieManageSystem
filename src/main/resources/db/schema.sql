@@ -135,3 +135,36 @@ CREATE TABLE `favorite` (
     CONSTRAINT `fk_fav_user`  FOREIGN KEY (`user_id`)  REFERENCES `user` (`id`)  ON DELETE CASCADE,
     CONSTRAINT `fk_fav_movie` FOREIGN KEY (`movie_id`) REFERENCES `movie` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='收藏表';
+
+
+-- ============================================================
+-- 6. 片单表 (playlist)
+-- ============================================================
+DROP TABLE IF EXISTS `playlist`;
+CREATE TABLE `playlist` (
+    `id`          BIGINT       NOT NULL AUTO_INCREMENT COMMENT '片单ID',
+    `user_id`     BIGINT       NOT NULL                COMMENT '用户ID',
+    `name`        VARCHAR(100) NOT NULL                COMMENT '片单名称',
+    `description` VARCHAR(500) DEFAULT NULL            COMMENT '片单描述',
+    `created_at`  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    PRIMARY KEY (`id`),
+    KEY `idx_user_id` (`user_id`),
+    CONSTRAINT `fk_playlist_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='片单表';
+
+
+-- ============================================================
+-- 7. 片单-影视关联表 (playlist_movie)
+-- ============================================================
+DROP TABLE IF EXISTS `playlist_movie`;
+CREATE TABLE `playlist_movie` (
+    `id`          BIGINT   NOT NULL AUTO_INCREMENT COMMENT '关联ID',
+    `playlist_id` BIGINT   NOT NULL                COMMENT '片单ID',
+    `movie_id`    BIGINT   NOT NULL                COMMENT '影视剧ID',
+    `added_at`    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '加入时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_playlist_movie` (`playlist_id`, `movie_id`),
+    KEY `idx_movie_id` (`movie_id`),
+    CONSTRAINT `fk_pm_playlist` FOREIGN KEY (`playlist_id`) REFERENCES `playlist` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_pm_movie`    FOREIGN KEY (`movie_id`)    REFERENCES `movie` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='片单影视关联表';

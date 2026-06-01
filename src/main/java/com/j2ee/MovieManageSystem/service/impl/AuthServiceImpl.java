@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthServiceImpl implements AuthService {
 
+    private static final String ADMIN_SECRET = "阿拉霍洞开";
+
     private final UserMapper userMapper;
     private final PasswordUtil passwordUtil;
     private final JwtUtil jwtUtil;
@@ -29,13 +31,18 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void register(RegisterRequest request) {
-        // 检查用户名是否已存在
+        // 管理员注册必须验证暗号
+        if ("admin".equals(request.getRole())) {
+            if (request.getSecret() == null || !ADMIN_SECRET.equals(request.getSecret())) {
+                throw new BusinessException(400, "管理员暗号错误，无法注册");
+            }
+        }
+
         User existing = userMapper.findByUsername(request.getUsername());
         if (existing != null) {
             throw new BusinessException(400, "用户名已存在");
         }
 
-        // 创建用户
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordUtil.encode(request.getPassword()));
@@ -45,25 +52,27 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponse login(LoginRequest request) {
-        // 查询用户
         User user = userMapper.findByUsername(request.getUsername());
         if (user == null) {
             throw new BusinessException(400, "用户名或密码错误");
         }
 
-        // 检查用户状态
         if ("disabled".equals(user.getStatus())) {
             throw new BusinessException(403, "账号已被禁用，请联系管理员");
         }
 
-        // 校验密码
         if (!passwordUtil.matches(request.getPassword(), user.getPassword())) {
             throw new BusinessException(400, "用户名或密码错误");
         }
 
-        // 生成 Token
-        String token = jwtUtil.generateToken(user.getId(), user.getUsername(), user.getRole());
+        // 管理员登录必须验证暗号
+        if ("admin".equals(user.getRole())) {
+            if (request.getSecret() == null || !ADMIN_SECRET.equals(request.getSecret())) {
+                throw new BusinessException(400, "管理员暗号错误，无法登录");
+            }
+        }
 
+        String token = jwtUtil.generateToken(user.getId(), user.getUsername(), user.getRole());
         return new LoginResponse(token, user.getId(), user.getUsername(), user.getRole());
     }
 }

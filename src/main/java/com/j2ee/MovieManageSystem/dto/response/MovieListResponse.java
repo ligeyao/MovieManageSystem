@@ -22,5 +22,7 @@ public class MovieListResponse {
     private Integer ratingCount;
     private Integer watchedCount;
     private Integer favoriteCount;
+    private Long publisherId;
+    private String publisherName;
     private LocalDateTime createdAt;
 }

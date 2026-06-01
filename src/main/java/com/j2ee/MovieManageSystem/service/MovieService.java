@@ -12,7 +12,8 @@ public interface MovieService {
 
     PageResult<MovieListResponse> listMovies(int page, int size, String keyword,
                                               String genre, Integer year,
-                                              String country, String sort);
+                                              String country, Long publisherId,
+                                              String sort);
 
     MovieDetailResponse getMovieDetail(Long movieId);
 

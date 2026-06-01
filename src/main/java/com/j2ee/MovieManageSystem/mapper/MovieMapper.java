@@ -53,6 +53,7 @@ public interface MovieMapper {
             "<if test='genre != null and genre != \"\"'>AND m.genre = #{genre} </if>" +
             "<if test='year != null'>AND m.year = #{year} </if>" +
             "<if test='country != null and country != \"\"'>AND m.country = #{country} </if>" +
+            "<if test='publisherId != null'>AND m.publisher_id = #{publisherId} </if>" +
             "<if test='sort == \"rating\"'>ORDER BY m.avg_rating DESC</if>" +
             "<if test='sort == \"year\"'>ORDER BY m.year DESC</if>" +
             "<if test='sort == \"watched\"'>ORDER BY m.watched_count DESC</if>" +
@@ -62,6 +63,7 @@ public interface MovieMapper {
                                   @Param("genre") String genre,
                                   @Param("year") Integer year,
                                   @Param("country") String country,
+                                  @Param("publisherId") Long publisherId,
                                   @Param("sort") String sort);
 
     /**
