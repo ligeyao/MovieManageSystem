@@ -8,6 +8,7 @@ import com.j2ee.MovieManageSystem.entity.UserMovieStatus;
 import com.j2ee.MovieManageSystem.interceptor.CurrentUser;
 import com.j2ee.MovieManageSystem.mapper.MovieMapper;
 import com.j2ee.MovieManageSystem.mapper.UserMovieStatusMapper;
+import com.j2ee.MovieManageSystem.service.BadgeService;
 import com.j2ee.MovieManageSystem.service.StatusService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,10 +27,12 @@ public class StatusServiceImpl implements StatusService {
 
     private final UserMovieStatusMapper statusMapper;
     private final MovieMapper movieMapper;
+    private final BadgeService badgeService;
 
-    public StatusServiceImpl(UserMovieStatusMapper statusMapper, MovieMapper movieMapper) {
+    public StatusServiceImpl(UserMovieStatusMapper statusMapper, MovieMapper movieMapper, BadgeService badgeService) {
         this.statusMapper = statusMapper;
         this.movieMapper = movieMapper;
+        this.badgeService = badgeService;
     }
 
     @Override
@@ -66,6 +69,7 @@ public class StatusServiceImpl implements StatusService {
             // 如果标记为"看过"，更新影视的 watched_count
             if ("watched".equals(newStatus)) {
                 movieMapper.incrementWatchedCount(movieId, 1);
+            badgeService.checkAndAward(userId, "watched_count", statusMapper.countWatchedByUser(userId));
             }
         } else if ("want_to_watch".equals(existing.getStatus()) && "watched".equals(newStatus)) {
             // 想看 → 看过（允许升级）
@@ -75,6 +79,7 @@ public class StatusServiceImpl implements StatusService {
 
             // 更新影视的 watched_count +1
             movieMapper.incrementWatchedCount(movieId, 1);
+            badgeService.checkAndAward(userId, "watched_count", statusMapper.countWatchedByUser(userId));
         } else if ("watched".equals(existing.getStatus())) {
             // 看过 → 看过（重复，忽略）
             throw new BusinessException(400, "已标记为看过，不可重复操作");

@@ -23,6 +23,7 @@ public class Movie {
     private String description;
     private String platform;
     private String awards;
+    private String type;        // movie / tv
     private BigDecimal avgRating;
     private Integer ratingCount;
     private Integer watchedCount;

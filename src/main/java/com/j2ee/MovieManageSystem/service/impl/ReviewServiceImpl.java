@@ -9,6 +9,7 @@ import com.j2ee.MovieManageSystem.entity.Review;
 import com.j2ee.MovieManageSystem.interceptor.CurrentUser;
 import com.j2ee.MovieManageSystem.mapper.MovieMapper;
 import com.j2ee.MovieManageSystem.mapper.ReviewMapper;
+import com.j2ee.MovieManageSystem.service.BadgeService;
 import com.j2ee.MovieManageSystem.service.ReviewService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,10 +27,12 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewMapper reviewMapper;
     private final MovieMapper movieMapper;
+    private final BadgeService badgeService;
 
-    public ReviewServiceImpl(ReviewMapper reviewMapper, MovieMapper movieMapper) {
+    public ReviewServiceImpl(ReviewMapper reviewMapper, MovieMapper movieMapper, BadgeService badgeService) {
         this.reviewMapper = reviewMapper;
         this.movieMapper = movieMapper;
+        this.badgeService = badgeService;
     }
 
     @Override
@@ -82,6 +85,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 重新计算该影视的平均评分
         recalcMovieRating(request.getMovieId());
+        badgeService.checkAndAward(userId, "review_count", reviewMapper.selectCountByUser(userId));
 
         return review.getId();
     }

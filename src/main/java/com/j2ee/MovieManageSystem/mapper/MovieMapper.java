@@ -13,10 +13,10 @@ import java.util.List;
 public interface MovieMapper {
 
     @Insert("INSERT INTO movie (title_cn, title_en, poster_url, director, actors, " +
-            "genre, year, country, language, duration, description, platform, awards, publisher_id) " +
+            "genre, year, country, language, duration, description, platform, awards, type, publisher_id) " +
             "VALUES (#{titleCn}, #{titleEn}, #{posterUrl}, #{director}, #{actors}, " +
             "#{genre}, #{year}, #{country}, #{language}, #{duration}, #{description}, " +
-            "#{platform}, #{awards}, #{publisherId})")
+            "#{platform}, #{awards}, #{type}, #{publisherId})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Movie movie);
 
@@ -65,6 +65,7 @@ public interface MovieMapper {
             "<if test='year != null'>AND m.year = #{year} </if>" +
             "<if test='country != null and country != \"\"'>AND m.country = #{country} </if>" +
             "<if test='publisherId != null'>AND m.publisher_id = #{publisherId} </if>" +
+            "<if test='type != null and type != \"\"'>AND m.type = #{type} </if>" +
             "<if test='sort == \"rating\"'>ORDER BY m.avg_rating DESC</if>" +
             "<if test='sort == \"year\"'>ORDER BY m.year DESC</if>" +
             "<if test='sort == \"watched\"'>ORDER BY m.watched_count DESC</if>" +
@@ -74,6 +75,7 @@ public interface MovieMapper {
                                   @Param("genre") String genre,
                                   @Param("language") String language,
                                   @Param("filterMode") String filterMode,
+                                  @Param("type") String type,
                                   @Param("year") Integer year,
                                   @Param("country") String country,
                                   @Param("publisherId") Long publisherId,

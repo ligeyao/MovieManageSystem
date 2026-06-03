@@ -44,6 +44,8 @@ public interface ReviewMapper {
 
     @Select("SELECT COUNT(*) FROM review WHERE movie_id = #{movieId}")
     int selectCountByMovie(Long movieId);
+    @Select("SELECT COUNT(*) FROM review WHERE user_id = #{userId}")
+    int selectCountByUser(Long userId);
 
     // ---- 我的影评 ----
 

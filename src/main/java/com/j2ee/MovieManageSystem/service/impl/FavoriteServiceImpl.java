@@ -8,6 +8,7 @@ import com.j2ee.MovieManageSystem.entity.Movie;
 import com.j2ee.MovieManageSystem.interceptor.CurrentUser;
 import com.j2ee.MovieManageSystem.mapper.FavoriteMapper;
 import com.j2ee.MovieManageSystem.mapper.MovieMapper;
+import com.j2ee.MovieManageSystem.service.BadgeService;
 import com.j2ee.MovieManageSystem.service.FavoriteService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,10 +24,12 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     private final FavoriteMapper favoriteMapper;
     private final MovieMapper movieMapper;
+    private final BadgeService badgeService;
 
-    public FavoriteServiceImpl(FavoriteMapper favoriteMapper, MovieMapper movieMapper) {
+    public FavoriteServiceImpl(FavoriteMapper favoriteMapper, MovieMapper movieMapper, BadgeService badgeService) {
         this.favoriteMapper = favoriteMapper;
         this.movieMapper = movieMapper;
+        this.badgeService = badgeService;
     }
 
     @Override
@@ -52,6 +55,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 
         // 更新影视收藏数 +1
         movieMapper.incrementFavoriteCount(movieId, 1);
+        badgeService.checkAndAward(userId, "favorite_count", favoriteMapper.selectByUserId(userId).size());
     }
 
     @Override

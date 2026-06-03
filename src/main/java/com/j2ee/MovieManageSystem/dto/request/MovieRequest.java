@@ -38,4 +38,5 @@ public class MovieRequest {
     private String description;
     private String platform;
     private String awards;
+    private String type;    // movie / tv
 }

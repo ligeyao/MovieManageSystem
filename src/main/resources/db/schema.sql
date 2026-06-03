@@ -185,3 +185,45 @@ CREATE TABLE `review_favorite` (
     CONSTRAINT `fk_rf_user`   FOREIGN KEY (`user_id`)  REFERENCES `user` (`id`)   ON DELETE CASCADE,
     CONSTRAINT `fk_rf_review` FOREIGN KEY (`review_id`) REFERENCES `review` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='影评收藏表';
+
+
+-- ============================================================
+-- 9. 勋章表 (badge)
+-- ============================================================
+DROP TABLE IF EXISTS `badge`;
+CREATE TABLE `badge` (
+    `id`          BIGINT       NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `name`        VARCHAR(50)  NOT NULL                COMMENT '勋章名称',
+    `description` VARCHAR(200) DEFAULT NULL            COMMENT '勋章描述',
+    `icon`        VARCHAR(20)  DEFAULT '🏅'           COMMENT '图标',
+    `rule_type`   VARCHAR(50)  NOT NULL                COMMENT '规则类型: review_count/watched_count/favorite_count',
+    `rule_value`  INT          NOT NULL                COMMENT '阈值',
+    `created_at`  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='勋章表';
+
+-- 预置勋章
+INSERT INTO badge (name, description, icon, rule_type, rule_value) VALUES
+('影评新人', '发表第一篇影评', '✍️', 'review_count', 1),
+('影评达人', '发表10篇影评', '📝', 'review_count', 10),
+('黄金影评', '发表50篇影评', '🌟', 'review_count', 50),
+('影视新手', '看过10部影视', '🎬', 'watched_count', 10),
+('资深影迷', '看过50部影视', '🍿', 'watched_count', 50),
+('观影狂人', '看过100部影视', '🔥', 'watched_count', 100),
+('收藏新秀', '收藏10部影视', '💎', 'favorite_count', 10),
+('收藏家', '收藏30部影视', '🏆', 'favorite_count', 30);
+
+-- ============================================================
+-- 10. 用户勋章表 (user_badge)
+-- ============================================================
+DROP TABLE IF EXISTS `user_badge`;
+CREATE TABLE `user_badge` (
+    `id`         BIGINT   NOT NULL AUTO_INCREMENT,
+    `user_id`    BIGINT   NOT NULL,
+    `badge_id`   BIGINT   NOT NULL,
+    `awarded_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_user_badge` (`user_id`, `badge_id`),
+    CONSTRAINT `fk_ub_user`  FOREIGN KEY (`user_id`)  REFERENCES `user` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_ub_badge` FOREIGN KEY (`badge_id`) REFERENCES `badge` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户勋章表';

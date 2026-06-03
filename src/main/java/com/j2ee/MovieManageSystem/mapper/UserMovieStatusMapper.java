@@ -24,6 +24,9 @@ public interface UserMovieStatusMapper {
     @Select("SELECT COUNT(*) FROM user_movie_status WHERE movie_id = #{movieId} AND status = 'watched'")
     int countWatchedByMovie(Long movieId);
 
+    @Select("SELECT COUNT(*) FROM user_movie_status WHERE user_id = #{userId} AND status = 'watched'")
+    int countWatchedByUser(Long userId);
+
     @Select("SELECT DISTINCT movie_id FROM user_movie_status WHERE user_id = #{userId} AND status = 'watched'")
     java.util.List<Long> selectWatchedMovieIds(Long userId);
 
